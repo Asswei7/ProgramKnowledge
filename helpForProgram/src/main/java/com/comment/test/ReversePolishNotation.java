@@ -67,8 +67,5 @@ public class ReversePolishNotation {
 
 }
 
-class Test{
-
-}
 /* EOF */
 

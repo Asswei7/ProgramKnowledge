@@ -22,8 +22,7 @@ public class Student {
     public void getGrade(){
         int temp;
         //teacherGrade老师打分      atGrade助教打分    peerGrade同学打分
-        //学生成绩由老师打分、助教打分、同学打分共同组成
-        temp = (int) (0.7 * this.teacherGrade + 0.2*this.atGrade+ 0.1*this.peerGrade);
+        temp = (int) (0.7 * this.teacherGrade + 0.2*this.atGrade+ 0.1*this.peerGrade);//学生成绩由老师打分、助教打分、同学打分共同组成
         if(temp>100) {
             this.totalGrade = 100;
         } else {

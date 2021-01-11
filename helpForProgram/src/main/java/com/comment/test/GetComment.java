@@ -46,21 +46,23 @@ public class GetComment {
         return beginIndex;
 
     }
-
-    public static void commentAdvice(List<CommentReportEntry> ls, Map<String, Integer> classInfo) throws IOException {
+    //在此处输出对注释的建议，可以在这里根据配置文件设置输出
+    public static void commentAdvice(List<CommentReportEntry> ls, Map<String, Integer> classInfo,List<String>config) throws IOException {
+        //config 行尾、孤立、方法前、类前
         List<Integer> flag = new ArrayList<>();
         Map<Integer, Boolean> lineMap = new HashMap<>();
         for(CommentReportEntry comment: ls){
             if("LineComment".equals(comment.type) && !comment.isOrphan){
                 int codeColNum = getCodeColNum(comment.lineNumber+1);
-                if(comment.colNumber != codeColNum){
+                //如果配置文件为none，不处理也不打印
+                if(comment.colNumber != codeColNum && !config.get(0).equals("none")){
                     //System.out.println("注释的列号"+comment.colNumber+"下一条语句的列好"+codeColNum);
                     System.out.println("提醒：第"+comment.lineNumber+"行不应有行尾注释！");
                 }
                 //System.out.println(comment.colNumber+"  "+comment.lineNumber);
 
             }
-            if(comment.isOrphan){
+            if(comment.isOrphan && !config.get(1).equals("none")){
                 System.out.println("提醒：第"+comment.lineNumber+"行不应有孤立的注释！");
             }
             if("JavadocComment".equals(comment.type)){
@@ -73,15 +75,15 @@ public class GetComment {
             // 获取键的值
             Integer value = classInfo.get(key);
             //System.out.println(value);
-            if (lineMap.get(value)==null) {
+            if (lineMap.get(value)==null && !config.get(2).equals("none")) {
                 System.out.println("提醒：第" + value + "行" + "类名" + key + "前没有javadoc形式注释。");
             }
         }
     }
 
-    
-    public static void main(String[] args) throws Exception {
-
+    //原来的主函数，现在将其封装为一个类中的方法
+    //public static void main(String[] args) throws Exception {
+    public void printAdvice(String FILE_PATH,List<String> config) throws IOException {
         CompilationUnit cu = StaticJavaParser.parse(new File(FILE_PATH));
 
         Map<String, Integer> classInfo = new HashMap<>() ;
@@ -100,7 +102,7 @@ public class GetComment {
 
         //comments.forEach(System.out::println);
         //验证孤立注释，行尾注释，类前的javadoc注释
-        commentAdvice(comments, classInfo);
+        commentAdvice(comments, classInfo,config);
     }
 
 
